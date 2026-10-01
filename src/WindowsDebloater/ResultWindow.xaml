@@ -1,0 +1,40 @@
+<Window x:Class="WindowsDebloater.ResultWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Result"
+        Width="780" Height="560" MinWidth="620" MinHeight="420"
+        Background="{StaticResource WindowBgBrush}"
+        Foreground="{StaticResource TextBrush}"
+        FontFamily="Segoe UI Variable Display, Segoe UI, Segoe UI Variable"
+        WindowStartupLocation="CenterOwner"
+        ShowInTaskbar="False"
+        ResizeMode="CanResize"
+        UseLayoutRounding="True">
+
+    <Grid Margin="18">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" Margin="2,0,2,14">
+            <TextBlock x:Name="HeadlineText" Style="{StaticResource H1}" TextWrapping="Wrap"/>
+            <TextBlock x:Name="DetailText" Style="{StaticResource Dim}" Margin="0,5,0,0" TextWrapping="Wrap"/>
+        </StackPanel>
+
+        <Border Grid.Row="1" Background="{StaticResource PanelBgBrush}"
+                BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="8">
+            <TextBox x:Name="DetailsBox" IsReadOnly="True" BorderThickness="0" Background="Transparent"
+                     FontFamily="Consolas, Cascadia Mono" FontSize="11.5"
+                     Padding="12" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"/>
+        </Border>
+
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,14,0,0">
+            <Button x:Name="UndoButton" Content="Undo Last Run" Style="{StaticResource BaseButton}"
+                    Margin="0,0,8,0" Click="OnUndo"/>
+            <Button Content="Close" Style="{StaticResource PrimaryButton}" MinWidth="110"
+                    IsDefault="True" IsCancel="True"/>
+        </StackPanel>
+    </Grid>
+</Window>

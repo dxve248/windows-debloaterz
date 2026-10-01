@@ -1,0 +1,199 @@
+<Window x:Class="WindowsDebloater.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Windows Debloater"
+        Width="1340" Height="900" MinWidth="1080" MinHeight="720"
+        Background="{StaticResource WindowBgBrush}"
+        Foreground="{StaticResource TextBrush}"
+        FontFamily="Segoe UI Variable Display, Segoe UI, Segoe UI Variable"
+        WindowStartupLocation="CenterScreen"
+        UseLayoutRounding="True">
+
+    <Grid Margin="16">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- ============================ header ============================ -->
+        <Grid Grid.Row="0" Margin="2,0,2,14">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Grid.Column="0">
+                <TextBlock Text="Windows Debloater" Style="{StaticResource H1}"/>
+                <TextBlock Text="{Binding OSDescription}" Style="{StaticResource Dim}" Margin="0,3,0,0"/>
+            </StackPanel>
+
+            <StackPanel Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Right">
+                <TextBlock Style="{StaticResource Faint}" HorizontalAlignment="Right">
+                    <Run Text="Elevated:"/>
+                    <Run Text="{Binding IsAdministrator, Mode=OneWay}"/>
+                </TextBlock>
+                <TextBlock Text="{Binding CatalogSource}" Style="{StaticResource Faint}"
+                           HorizontalAlignment="Right" Margin="0,3,0,0"/>
+            </StackPanel>
+        </Grid>
+
+        <!-- ============================ toolbar =========================== -->
+        <Border Grid.Row="1" Background="{StaticResource PanelBgBrush}"
+                BorderBrush="{StaticResource BorderBrush}" BorderThickness="1"
+                CornerRadius="8" Padding="12" Margin="0,0,0,12">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <WrapPanel Grid.Column="0" VerticalAlignment="Center">
+                    <TextBlock Text="Presets" Style="{StaticResource H2}" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                    <Button Content="Recommended" Style="{StaticResource BaseButton}" Margin="0,0,6,0"
+                            Command="{Binding PresetRecommendedCommand}"
+                            ToolTip="Low-risk bloat removal plus privacy and interface tweaks."/>
+                    <Button Content="Minimal" Style="{StaticResource BaseButton}" Margin="0,0,6,0"
+                            Command="{Binding PresetMinimalCommand}"
+                            ToolTip="Privacy tweaks only. Nothing is removed."/>
+                    <Button Content="Thorough" Style="{StaticResource BaseButton}" Margin="0,0,14,0"
+                            Command="{Binding PresetThoroughCommand}"
+                            ToolTip="Everything on by default, including moderate-risk items."/>
+                    <Button Content="Clear" Style="{StaticResource BaseButton}" Margin="0,0,14,0"
+                            Command="{Binding PresetClearCommand}"/>
+
+                    <Border VerticalAlignment="Center" Background="{StaticResource CardBgBrush}"
+                            BorderBrush="{StaticResource BorderBrush}" BorderThickness="1"
+                            CornerRadius="6" Padding="10,5" Margin="0,0,8,0">
+                        <StackPanel Orientation="Horizontal">
+                            <CheckBox Style="{StaticResource ItemCheckBox}"
+                                      IsChecked="{Binding AllowRisky, Mode=TwoWay}" VerticalAlignment="Top">
+                                <TextBlock FontSize="12.5" Foreground="{StaticResource TextBrush}" VerticalAlignment="Top">
+                                    Allow moderate and high-risk changes
+                                </TextBlock>
+                            </CheckBox>
+                        </StackPanel>
+                    </Border>
+
+                    <Button Content="All" Style="{StaticResource BaseButton}" Margin="0,0,6,0"
+                            Command="{Binding SelectAllCommand}" Padding="11,7"/>
+                    <Button Content="None" Style="{StaticResource BaseButton}" Margin="0,0,6,0"
+                            Command="{Binding SelectNoneCommand}" Padding="11,7"/>
+                    <Button Content="Drop risky" Style="{StaticResource BaseButton}" Margin="0,0,6,0"
+                            Command="{Binding DropRiskyCommand}" Padding="11,7"/>
+                    <Button Content="Select risky" Style="{StaticResource BaseButton}"
+                            Command="{Binding SelectRiskyCommand}" Padding="11,7"/>
+                </WrapPanel>
+
+                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center" Margin="16,0,0,0">
+                    <TextBlock Text="Filter" Style="{StaticResource Dim}" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                    <TextBox Width="220" Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged, Delay=120}"
+                             ToolTip="Filter items by name, description or category."/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- ============================ content =========================== -->
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="12"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <Border Grid.Column="0" Background="{StaticResource PanelBgBrush}"
+                    BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="8">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Border Grid.Row="0" Background="{StaticResource HeaderBgBrush}" CornerRadius="7,7,0,0"
+                            BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1" Padding="14,10">
+                        <StackPanel>
+                            <TextBlock Text="Bloatware apps" Style="{StaticResource H2}"/>
+                            <TextBlock Style="{StaticResource Faint}" Margin="0,3,0,0"
+                                       Text="Tick apps to remove. Protected entries can never be removed."/>
+                        </StackPanel>
+                    </Border>
+                    <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Padding="8,10">
+                        <ItemsControl ItemsSource="{Binding AppGroups}" ItemTemplate="{StaticResource GroupTemplate}"/>
+                    </ScrollViewer>
+                </Grid>
+            </Border>
+
+            <Border Grid.Column="2" Background="{StaticResource PanelBgBrush}"
+                    BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="8">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Border Grid.Row="0" Background="{StaticResource HeaderBgBrush}" CornerRadius="7,7,0,0"
+                            BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1" Padding="14,10">
+                        <StackPanel>
+                            <TextBlock Text="Privacy, services and interface" Style="{StaticResource H2}"/>
+                            <TextBlock Style="{StaticResource Faint}" Margin="0,3,0,0"
+                                       Text="Registry, service and scheduled task changes."/>
+                        </StackPanel>
+                    </Border>
+                    <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Padding="8,10">
+                        <ItemsControl ItemsSource="{Binding TweakGroups}" ItemTemplate="{StaticResource GroupTemplate}"/>
+                    </ScrollViewer>
+                </Grid>
+            </Border>
+        </Grid>
+
+        <!-- ============================ footer ============================ -->
+        <Border Grid.Row="3" Background="{StaticResource PanelBgBrush}"
+                BorderBrush="{StaticResource BorderBrush}" BorderThickness="1"
+                CornerRadius="8" Padding="12" Margin="0,12,0,0">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <Grid Grid.Row="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                        <TextBlock Text="{Binding StatusText}" FontSize="12.5" TextTrimming="CharacterEllipsis"/>
+                        <ProgressBar Value="{Binding ProgressValue, Mode=OneWay}" Maximum="100"
+                                     Margin="0,8,16,0" Visibility="{Binding IsBusy, Converter={StaticResource BoolToVis}}"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="1" Orientation="Horizontal">
+                        <Button Content="Scan" Style="{StaticResource BaseButton}" Margin="0,0,8,0"
+                                Command="{Binding ScanCommand}"
+                                ToolTip="Check which apps, services and tasks are actually present."/>
+                        <Button Content="Copy selection" Style="{StaticResource BaseButton}" Margin="0,0,8,0"
+                                Command="{Binding CopySummaryCommand}"/>
+                        <Button Content="Open log folder" Style="{StaticResource BaseButton}" Margin="0,0,8,0"
+                                Command="{Binding OpenLogsCommand}"/>
+                        <Button Content="{Binding UndoLabel}" Style="{StaticResource BaseButton}" Margin="0,0,8,0"
+                                Command="{Binding UndoCommand}" MinWidth="200"/>
+                        <Button Content="Preview and apply" Style="{StaticResource PrimaryButton}"
+                                Command="{Binding PreviewCommand}" MinWidth="150"/>
+                    </StackPanel>
+                </Grid>
+
+                <Expander Grid.Row="1" x:Name="LogExpander" Margin="0,10,0,0"
+                          IsExpanded="{Binding LogExpanded, Mode=TwoWay}">
+                    <Expander.Header>
+                        <TextBlock Text="Activity log" FontSize="11.5" Foreground="{StaticResource DimBrush}"/>
+                    </Expander.Header>
+                    <TextBox Text="{Binding LogText, Mode=OneWay}" IsReadOnly="True"
+                             Height="120" Margin="0,8,0,0"
+                             FontFamily="Consolas, Cascadia Mono"
+                             FontSize="11.5" VerticalScrollBarVisibility="Auto"/>
+                </Expander>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>

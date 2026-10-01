@@ -1,0 +1,117 @@
+<Window x:Class="WindowsDebloater.PreviewWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Preview changes"
+        Width="1220" Height="780" MinWidth="900" MinHeight="560"
+        Background="{StaticResource WindowBgBrush}"
+        Foreground="{StaticResource TextBrush}"
+        FontFamily="Segoe UI Variable Display, Segoe UI, Segoe UI Variable"
+        WindowStartupLocation="CenterOwner"
+        ShowInTaskbar="False"
+        ResizeMode="CanResize"
+        UseLayoutRounding="True">
+
+    <Grid Margin="16">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- header -->
+        <StackPanel Grid.Row="0" Margin="2,0,2,12">
+            <TextBlock Text="Nothing has been changed yet" Style="{StaticResource H1}"/>
+            <TextBlock x:Name="SummaryLine" Style="{StaticResource Dim}" Margin="0,5,0,0"
+                       TextWrapping="Wrap"/>
+        </StackPanel>
+
+        <!-- warnings -->
+        <StackPanel Grid.Row="1" Margin="0,0,0,12">
+            <Border Background="#2A2114" CornerRadius="6" Padding="12,9" Margin="0,0,0,8">
+                <Border.Style>
+                    <Style TargetType="Border">
+                        <Setter Property="Background" Value="#2A2114"/>
+                        <Setter Property="BorderBrush" Value="{StaticResource WarnBrush}"/>
+                        <Setter Property="BorderThickness" Value="1"/>
+                        <Setter Property="CornerRadius" Value="6"/>
+                        <Setter Property="Padding" Value="12,9"/>
+                        <Setter Property="Margin" Value="0,0,0,8"/>
+                        <Setter Property="Visibility" Value="Collapsed"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding HasRisk}" Value="True">
+                                <Setter Property="Visibility" Value="Visible"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Border.Style>
+                <StackPanel>
+                    <TextBlock Text="This includes higher-risk changes" FontSize="12.5" FontWeight="SemiBold"
+                               Foreground="{StaticResource WarnBrush}"/>
+                    <TextBlock Style="{StaticResource Dim}" Margin="0,4,0,0" TextWrapping="Wrap"
+                               Text="Moderate and high-risk items can affect services or features you rely on. Read the Current and Outcome columns before continuing."/>
+                </StackPanel>
+            </Border>
+
+            <Border Background="#1B2430" BorderBrush="{StaticResource AccentDeepBrush}" BorderThickness="1"
+                    CornerRadius="6" Padding="12,9">
+                <TextBlock Style="{StaticResource Dim}" TextWrapping="Wrap"
+                           Text="A system restore point is created before anything is applied, and every change is written to an undo manifest so this run can be reverted from the main window."/>
+            </Border>
+        </StackPanel>
+
+        <!-- change list -->
+        <Border Grid.Row="2" Background="{StaticResource PanelBgBrush}"
+                BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="8">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <Border Grid.Row="0" Background="{StaticResource HeaderBgBrush}" CornerRadius="7,7,0,0"
+                        BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1">
+                    <Grid Margin="14,9">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="140"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="230"/>
+                            <ColumnDefinition Width="200"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="Category" Style="{StaticResource Faint}"/>
+                        <TextBlock Grid.Column="1" Text="Change and target" Style="{StaticResource Faint}"/>
+                        <TextBlock Grid.Column="2" Text="Current" Style="{StaticResource Faint}"/>
+                        <TextBlock Grid.Column="3" Text="Outcome" Style="{StaticResource Faint}"/>
+                    </Grid>
+                </Border>
+
+                <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Padding="10">
+                    <ItemsControl x:Name="ItemList"/>
+                </ScrollViewer>
+            </Grid>
+        </Border>
+
+        <!-- footer -->
+        <Grid Grid.Row="3" Margin="0,12,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <CheckBox x:Name="Acknowledge" Grid.Column="0" Style="{StaticResource ItemCheckBox}"
+                      VerticalAlignment="Center">
+                <TextBlock FontSize="12.5" Foreground="{StaticResource TextBrush}" VerticalAlignment="Top"
+                           Text="I have read the Current and Outcome columns and understand these changes affect this system."/>
+            </CheckBox>
+
+            <StackPanel Grid.Column="1" Orientation="Horizontal">
+                <Button Content="Copy plan" Style="{StaticResource BaseButton}" Margin="0,0,8,0"
+                        Click="OnCopy"/>
+                <Button Content="Cancel" Style="{StaticResource BaseButton}" Margin="0,0,8,0"
+                        IsCancel="True"/>
+                <Button x:Name="ApplyButton" Content="Apply changes" Style="{StaticResource PrimaryButton}"
+                        IsDefault="True" MinWidth="140" Click="OnApply"/>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</Window>
